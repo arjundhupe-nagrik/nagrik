@@ -250,7 +250,7 @@ export default function FilePage() {
     )
   }
 
-  const ready = form.category && form.ward_number && form.title.length > 5
+  const ready = form.category !== '' && form.ward_number !== '' && form.title.trim().length > 0 && form.description.trim().length > 10
 
   async function submit() {
     if (!ready) return
@@ -326,14 +326,14 @@ export default function FilePage() {
         <div style={{ marginBottom:'16px' }}>
           <label style={{ fontSize:'11px', fontWeight:'700', color:'rgba(255,255,255,0.4)', display:'block', marginBottom:'8px', textTransform:'uppercase', letterSpacing:'0.8px' }}>Title</label>
           <input value={form.title} onChange={e => setField('title', e.target.value)}
-            placeholder="e.g. Pothole near Dharampeth market"
+            placeholder="e.g. Pothole on main road"
             style={{ background:'rgba(255,255,255,0.05)', border:`1px solid ${form.title.length > 5 ? 'rgba(232,115,26,0.4)' : 'rgba(255,255,255,0.08)'}`, color:'white', borderRadius:'10px', padding:'14px', fontSize:'15px', width:'100%', outline:'none' }} />
         </div>
 
         {/* Description */}
         <div style={{ marginBottom:'20px' }}>
           <label style={{ fontSize:'11px', fontWeight:'700', color:'rgba(255,255,255,0.4)', display:'block', marginBottom:'8px', textTransform:'uppercase', letterSpacing:'0.8px' }}>
-            Description <span style={{ color:'rgba(255,255,255,0.2)', fontWeight:'400' }}>(optional — helps AI)</span>
+            Description
           </label>
           <textarea value={form.description} onChange={e => setField('description', e.target.value)}
             placeholder="How long? How bad? How many people affected?"
