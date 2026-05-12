@@ -69,10 +69,14 @@ export default function WardsPage() {
       <nav style={{ borderBottom:'1px solid rgba(255,255,255,0.06)', padding:'0 32px', height:'58px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(13,13,20,0.85)', backdropFilter:'blur(12px)', position:'sticky', top:0, zIndex:100 }}>
         <a href="/" style={{ fontSize:'20px', fontWeight:'900', color:'#E8731A', textDecoration:'none' }}>nagrik</a>
         <div style={{ display:'flex', gap:'4px', alignItems:'center' }}>
-          <a href="/feed" style={{ color:'rgba(255,255,255,0.4)', fontSize:'13px', textDecoration:'none', padding:'6px 14px' }}>Feed</a>
-          <a href="/wards" style={{ color:'white', fontSize:'13px', textDecoration:'none', padding:'6px 14px', fontWeight:'600' }}>Wards</a>
+          <a href="/feed" style={{ color:'white', fontSize:'13px', textDecoration:'none', padding:'6px 14px', fontWeight:'600' }}>Feed</a>
+          <a href="/wards" style={{ color:'rgba(255,255,255,0.4)', fontSize:'13px', textDecoration:'none', padding:'6px 14px' }}>Wards</a>
           <a href="/my-complaints" style={{ color:'rgba(255,255,255,0.4)', fontSize:'13px', textDecoration:'none', padding:'6px 14px' }}>My complaints</a>
-          <a href="/file" style={{ background:'#E8731A', color:'white', fontSize:'13px', fontWeight:'700', textDecoration:'none', padding:'8px 18px', borderRadius:'8px', marginLeft:'8px' }}>+ File</a>
+          <button onClick={async()=>{ await supabase.auth.signOut(); router.push('/login') }}
+            style={{ background:'rgba(224,82,82,0.15)', border:'1px solid rgba(224,82,82,0.3)', color:'#E05252', padding:'7px 14px', borderRadius:'8px', fontSize:'12px', fontWeight:'700', cursor:'pointer', marginLeft:'8px' }}>
+            Sign out
+          </button>
+          <a href="/file" style={{ background:'#E8731A', color:'white', fontSize:'13px', fontWeight:'700', textDecoration:'none', padding:'8px 18px', borderRadius:'8px', marginLeft:'4px' }}>+ File</a>
         </div>
       </nav>
 

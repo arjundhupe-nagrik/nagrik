@@ -76,12 +76,17 @@ export default function LoginPage() {
   const [lang, setLang] = useState<L>('en')
   const [mode, setMode] = useState<'signup'|'signin'>('signup')
   const [loading, setLoading] = useState(false)
+  const [checking, setChecking] = useState(true)
   const [error, setError] = useState('')
   const [tick, setTick] = useState(0)
   const [form, setForm] = useState({ name:'', email:'', password:'' })
   const t = LANG[lang]
 
   useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) { router.push('/'); return }
+      setChecking(false)
+    })
     const timer = setInterval(() => setTick(n => (n+1) % 4), 2600)
     return () => clearInterval(timer)
   }, [])
@@ -120,10 +125,14 @@ export default function LoginPage() {
     { val: lang==='en'?'Public':lang==='hi'?'सार्वजनिक':'सार्वजनिक', label: lang==='en'?'All data open':lang==='hi'?'खुला डेटा':'खुला डेटा', color:'#C8920A', icon:'📊' },
   ]
 
+  if (checking) return (
+    <main style={{ minHeight:'100vh', background:'#0D0D14', display:'flex', alignItems:'center', justifyContent:'center', fontFamily:"'Inter',system-ui,sans-serif" }}>
+      <div style={{ color:'rgba(255,255,255,0.2)', fontSize:'14px' }}>Loading...</div>
+    </main>
+  )
+
   return (
     <main style={{ height:'100vh', background:'#0D0D14', fontFamily:"'Inter',system-ui,sans-serif", display:'flex', flexDirection:'column', overflow:'hidden' }}>
-
-      {/* Navbar */}
       <nav style={{ height:'52px', flexShrink:0, padding:'0 28px', display:'flex', alignItems:'center', justifyContent:'space-between', borderBottom:'1px solid rgba(255,255,255,0.07)' }}>
         <div style={{ fontSize:'20px', fontWeight:'900', color:'#E8731A' }}>nagrik</div>
         <div style={{ display:'flex', gap:'3px', background:'rgba(255,255,255,0.05)', border:'1px solid rgba(255,255,255,0.08)', borderRadius:'8px', padding:'3px' }}>
@@ -136,13 +145,10 @@ export default function LoginPage() {
         </div>
       </nav>
 
-      {/* Body */}
       <div style={{ flex:1, display:'grid', gridTemplateColumns:'1fr 400px', minHeight:0 }}>
 
         {/* LEFT */}
         <div style={{ padding:'28px 40px 24px', display:'flex', flexDirection:'column', justifyContent:'space-between', borderRight:'1px solid rgba(255,255,255,0.07)', overflow:'hidden' }}>
-
-          {/* Top: headline */}
           <div>
             <div style={{ display:'inline-flex', alignItems:'center', gap:'6px', background:'rgba(232,115,26,0.1)', border:'1px solid rgba(232,115,26,0.2)', color:'#E8731A', fontSize:'10px', fontWeight:'700', padding:'4px 10px', borderRadius:'20px', marginBottom:'14px', letterSpacing:'0.5px' }}>
               <span style={{ width:'5px', height:'5px', background:'#E8731A', borderRadius:'50%', animation:'pulse 2s infinite' }}/>
@@ -154,9 +160,7 @@ export default function LoginPage() {
             <p style={{ fontSize:'13px', color:'rgba(255,255,255,0.4)', marginTop:'10px', lineHeight:'1.5', maxWidth:'380px' }}>{t.sub}</p>
           </div>
 
-          {/* Middle */}
           <div>
-            {/* Stats */}
             <div style={{ display:'grid', gridTemplateColumns:'repeat(4,1fr)', gap:'8px', marginBottom:'14px' }}>
               {stats.map((s,i) => (
                 <div key={i} style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'10px', padding:'10px 8px', textAlign:'center' }}>
@@ -167,7 +171,6 @@ export default function LoginPage() {
               ))}
             </div>
 
-            {/* Animated feature ticker */}
             <div style={{ background:'rgba(255,255,255,0.03)', border:'1px solid rgba(255,255,255,0.07)', borderRadius:'10px', padding:'12px 16px', marginBottom:'14px', display:'flex', alignItems:'center', justifyContent:'space-between' }}>
               <div style={{ fontSize:'13px', fontWeight:'600', color:'white' }}>
                 {lang==='en'?'✦ When you sign in:':lang==='hi'?'✦ Sign in करने पर:':'✦ Sign in केल्यावर:'} <span style={{ color:'#E8731A' }}>{t.features[tick]}</span>
@@ -179,7 +182,6 @@ export default function LoginPage() {
               </div>
             </div>
 
-            {/* Mission + Vision */}
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', gap:'10px', marginBottom:'14px' }}>
               <div style={{ background:'rgba(232,115,26,0.06)', border:'1px solid rgba(232,115,26,0.15)', borderRadius:'10px', padding:'12px 14px' }}>
                 <div style={{ fontSize:'9px', fontWeight:'700', color:'#E8731A', textTransform:'uppercase', letterSpacing:'0.8px', marginBottom:'5px' }}>
@@ -196,31 +198,28 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Bottom: no-login CTAs */}
           <div>
             <div style={{ fontSize:'11px', color:'rgba(255,255,255,0.25)', marginBottom:'8px' }}>{t.noLoginTitle}</div>
             <div style={{ display:'flex', gap:'8px' }}>
               <button onClick={() => router.push('/file')}
                 style={{ flex:1, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', color:'rgba(255,255,255,0.6)', padding:'9px 12px', borderRadius:'8px', fontSize:'12px', fontWeight:'600', cursor:'pointer', transition:'all 0.15s' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor='rgba(255,255,255,0.2)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor='rgba(255,255,255,0.09)')}>
+                onMouseEnter={e=>(e.currentTarget.style.borderColor='rgba(255,255,255,0.2)')}
+                onMouseLeave={e=>(e.currentTarget.style.borderColor='rgba(255,255,255,0.09)')}>
                 {t.fileBtn}
               </button>
               <button onClick={() => router.push('/public')}
                 style={{ flex:1, background:'rgba(255,255,255,0.04)', border:'1px solid rgba(255,255,255,0.09)', color:'rgba(255,255,255,0.6)', padding:'9px 12px', borderRadius:'8px', fontSize:'12px', fontWeight:'600', cursor:'pointer', transition:'all 0.15s' }}
-                onMouseEnter={e => (e.currentTarget.style.borderColor='rgba(255,255,255,0.2)')}
-                onMouseLeave={e => (e.currentTarget.style.borderColor='rgba(255,255,255,0.09)')}>
+                onMouseEnter={e=>(e.currentTarget.style.borderColor='rgba(255,255,255,0.2)')}
+                onMouseLeave={e=>(e.currentTarget.style.borderColor='rgba(255,255,255,0.09)')}>
                 {t.browseBtn}
               </button>
             </div>
           </div>
         </div>
 
-        {/* RIGHT — auth */}
+        {/* RIGHT */}
         <div style={{ display:'flex', alignItems:'center', justifyContent:'center', padding:'24px 28px', background:'rgba(255,255,255,0.01)' }}>
           <div style={{ width:'100%' }}>
-
-            {/* Tabs */}
             <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr', background:'rgba(255,255,255,0.04)', borderRadius:'10px', padding:'3px', marginBottom:'16px', border:'1px solid rgba(255,255,255,0.07)' }}>
               {(['signup','signin'] as const).map(m => (
                 <button key={m} onClick={() => { setMode(m); setError(''); setForm({ name:'', email:'', password:'' }) }}
@@ -233,8 +232,8 @@ export default function LoginPage() {
             {/* MVP ribbon */}
             <button onClick={() => router.push('/file')}
               style={{ width:'100%', background:'rgba(61,170,110,0.08)', border:'1px solid rgba(61,170,110,0.25)', borderRadius:'10px', padding:'10px 14px', marginBottom:'16px', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'space-between', gap:'8px', transition:'all 0.15s' }}
-              onMouseEnter={e => (e.currentTarget.style.borderColor='rgba(61,170,110,0.5)')}
-              onMouseLeave={e => (e.currentTarget.style.borderColor='rgba(61,170,110,0.25)')}>
+              onMouseEnter={e=>(e.currentTarget.style.borderColor='rgba(61,170,110,0.5)')}
+              onMouseLeave={e=>(e.currentTarget.style.borderColor='rgba(61,170,110,0.25)')}>
               <div style={{ display:'flex', alignItems:'center', gap:'8px' }}>
                 <span style={{ fontSize:'18px' }}>📝</span>
                 <div style={{ textAlign:'left' }}>
@@ -245,7 +244,6 @@ export default function LoginPage() {
               <span style={{ color:'#3DAA6E', fontSize:'16px' }}>→</span>
             </button>
 
-            {/* Heading */}
             <div style={{ marginBottom:'14px' }}>
               <h2 style={{ fontSize:'18px', fontWeight:'800', color:'white', margin:'0 0 3px' }}>
                 {mode==='signup'
@@ -253,9 +251,7 @@ export default function LoginPage() {
                   : (lang==='en'?'Welcome back':lang==='hi'?'वापसी पर स्वागत':'परत स्वागत')}
               </h2>
               {mode==='signin' && (
-                <p style={{ margin:0, fontSize:'12px', color:'rgba(255,255,255,0.3)' }}>
-                  {t.welcomeBack}
-                </p>
+                <p style={{ margin:0, fontSize:'12px', color:'rgba(255,255,255,0.3)' }}>{t.welcomeBack}</p>
               )}
             </div>
 
@@ -265,7 +261,6 @@ export default function LoginPage() {
               </div>
             )}
 
-            {/* Google */}
             <button onClick={googleAuth} disabled={loading}
               style={{ width:'100%', background:'white', color:'#1A1A2E', border:'none', padding:'12px', borderRadius:'10px', fontSize:'14px', fontWeight:'700', cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:'10px', marginBottom:'12px', opacity:loading?0.7:1 }}>
               <svg width="16" height="16" viewBox="0 0 24 24">

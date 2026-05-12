@@ -83,7 +83,13 @@ export default function ComplaintPage() {
     <main style={{ minHeight:'100vh', background:'#0D0D14', fontFamily:"'Inter',system-ui,sans-serif" }}>
       <nav style={{ borderBottom:'1px solid rgba(255,255,255,0.06)', padding:'0 32px', height:'58px', display:'flex', alignItems:'center', justifyContent:'space-between', background:'rgba(13,13,20,0.85)', backdropFilter:'blur(12px)', position:'sticky', top:0, zIndex:100 }}>
         <a href="/" style={{ fontSize:'20px', fontWeight:'900', color:'#E8731A', textDecoration:'none' }}>nagrik</a>
-        <a href="/feed" style={{ color:'rgba(255,255,255,0.4)', fontSize:'13px', textDecoration:'none' }}>← Back to feed</a>
+        <div style={{ display:'flex', gap:'8px', alignItems:'center' }}>
+          <a href="/feed" style={{ color:'rgba(255,255,255,0.4)', fontSize:'13px', textDecoration:'none' }}>← Back to feed</a>
+          <button onClick={async()=>{ await supabase.auth.signOut(); router.push('/login') }}
+            style={{ background:'rgba(224,82,82,0.15)', border:'1px solid rgba(224,82,82,0.3)', color:'#E05252', padding:'7px 14px', borderRadius:'8px', fontSize:'12px', fontWeight:'700', cursor:'pointer' }}>
+            Sign out
+          </button>
+        </div>
       </nav>
 
       <div style={{ maxWidth:'640px', margin:'0 auto', padding:'32px 24px' }}>
